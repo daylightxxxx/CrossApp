@@ -1,54 +1,23 @@
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
+# CrossApp
 
-Console.OutputEncoding = Encoding.UTF8;
+Наскрізний проєкт з крос-платформного програмування.
+Предметна область: Замовлення. Сутності: Customer, Product, Order, OrderLine.
+Призначення: оформлення замовлень і підрахунок їхніх сум.
 
-var info = new EnvInfo(
-    Student: "Скиба Максим, група ФЕІ-35",
-    OsDescription: RuntimeInformation.OSDescription,
-    OsVersion: Environment.OSVersion.ToString(),
-    ProcessArchitecture: RuntimeInformation.ProcessArchitecture.ToString(),
-    DotNetVersion: Environment.Version.ToString(),
-    Runtime: RuntimeInformation.FrameworkDescription,
-    AppDirectory: AppContext.BaseDirectory,
-    CurrentDirectory: Environment.CurrentDirectory,
-    Domain: "Замовлення (клієнти, товари, замовлення, рядки замовлення)");
+## Запуск
 
-if (args.Contains("--json"))
-{
-    var options = new JsonSerializerOptions
-    {
-        WriteIndented = true,
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
-    Console.WriteLine(JsonSerializer.Serialize(info, options));
-}
-else
-{
-    var line = new string('-', 52);
-    Console.WriteLine("CrossApp – практикум з крос-платформного програмування");
-    Console.WriteLine($"Студент: {info.Student}");
-    Console.WriteLine(line);
-    Console.WriteLine($"ОС (OSDescription): {info.OsDescription}");
-    Console.WriteLine($"ОС (Environment)  : {info.OsVersion}");
-    Console.WriteLine($"Архітектура процесу: {info.ProcessArchitecture}");
-    Console.WriteLine($"Версія .NET (CLR) : {info.DotNetVersion}");
-    Console.WriteLine($"Runtime           : {info.Runtime}");
-    Console.WriteLine($"Каталог застосунку: {info.AppDirectory}");
-    Console.WriteLine($"Поточний каталог  : {info.CurrentDirectory}");
-    Console.WriteLine(line);
-    Console.WriteLine($"Предметна область: {info.Domain}");
-}
+    dotnet build
+    dotnet run --project src/Cli
 
-record EnvInfo(
-    string Student,
-    string OsDescription,
-    string OsVersion,
-    string ProcessArchitecture,
-    string DotNetVersion,
-    string Runtime,
-    string AppDirectory,
-    string CurrentDirectory,
-    string Domain);
+Вивід у форматі JSON (додаткове завдання):
+
+dotnet run --project src/Cli -- --json
+
+## Середовище
+
+.NET SDK 10.0.401, Windows 11 Home x64
+
+## Розмір publish (self-contained)
+
+- win-x64: 153 МБ (161 139 922 байтів)
+- linux-x64: 157 МБ (165 253 706 байтів)
