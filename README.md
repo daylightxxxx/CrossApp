@@ -20,17 +20,23 @@
 
     dotnet publish src/Cli -c Release -r win-x64 --self-contained true  -o publish-out/win-x64-self
     dotnet publish src/Cli -c Release -r win-x64 --self-contained false -o publish-out/win-x64-framework
+    dotnet publish src/Cli -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish-out/win-x64-singlefile
+    dotnet publish src/Cli -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -o publish-out/win-x64-trimmed
 
 Запуск без dotnet run: `.\publish-out\win-x64-self\Cli.exe`
 
-| Режим               | Розмір каталогу        | Потрібен встановлений runtime |
-|---------------------|-------------------------|--------------------------------|
-| self-contained      | 76,9 МБ (80 584 538 б)  | Ні                             |
-| framework-dependent | 0,19 МБ (200 186 б)     | Так (.NET 10)                  |
+| Режим                | Розмір каталогу        | Файлів | Потрібен runtime |
+|----------------------|--------------------------|--------|-------------------|
+| framework-dependent  | 0,19 МБ (200 186 б)     | 7      | Так (.NET 10)     |
+| self-contained       | 76,9 МБ (80 584 538 б)  | 194    | Ні                |
+| Single-File          | 70,1 МБ (73 559 136 б)  | 3      | Ні                |
+| Trimmed (Single-File)| 12,4 МБ (12 972 017 б)  | 3      | Ні                |
 
 Self-contained містить копію .NET runtime, тому значно більший, але не
-вимагає встановленого .NET на цільовій машині. Framework-dependent легкий,
-але потребує встановленого .NET 10.
+вимагає встановленого .NET на цільовій машині. PublishSingleFile об'єднує
+всі збірки в один файл. PublishTrimmed додатково вирізає невикористаний
+код і дає найбільшу економію розміру (у цьому проєкті без попереджень
+компілятора, бо код не використовує рефлексію чи серіалізацію).
 
 ## Multi-targeting
 
