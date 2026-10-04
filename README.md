@@ -9,15 +9,31 @@
     dotnet build
     dotnet run --project src/Cli
 
-Вивід у форматі JSON (додаткове завдання):
-
-dotnet run --project src/Cli -- --json
-
 ## Середовище
 
-.NET SDK 10.0.401, Windows 11 Home x64
+.NET SDK 10.0.401, Windows 11 Home x64 (RID: win-x64)
 
-## Розмір publish (self-contained)
+## Публікація
 
-- win-x64: 153 МБ (161 139 922 байтів)
-- linux-x64: 157 МБ (165 253 706 байтів)
+Логіку збору інформації про середовище винесено в бібліотеку `Core`,
+`Cli` лише форматує вивід (ProjectReference Cli → Core).
+
+    dotnet publish src/Cli -c Release -r win-x64 --self-contained true  -o publish-out/win-x64-self
+    dotnet publish src/Cli -c Release -r win-x64 --self-contained false -o publish-out/win-x64-framework
+
+Запуск без dotnet run: `.\publish-out\win-x64-self\Cli.exe`
+
+| Режим               | Розмір каталогу        | Потрібен встановлений runtime |
+|---------------------|-------------------------|--------------------------------|
+| self-contained      | 76,9 МБ (80 584 538 б)  | Ні                             |
+| framework-dependent | 0,19 МБ (200 186 б)     | Так (.NET 10)                  |
+
+Self-contained містить копію .NET runtime, тому значно більший, але не
+вимагає встановленого .NET на цільовій машині. Framework-dependent легкий,
+але потребує встановленого .NET 10.
+
+## Multi-targeting
+
+Спроба зробити Core multi-target (`net8.0;net10.0`) дала помилку `NU1201`,
+бо Cli (ProjectReference на Core) лишається на net10.0. Залишено лише
+`<TargetFramework>net10.0</TargetFramework>`.
